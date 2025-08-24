@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>복쓰쌤의 보석대화</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            width: 100%;
+            max-width: 600px;
+            height: 90vh;
+            max-height: 800px;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-header {
+            background-color: #4a90e2;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        .chat-box {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            border-bottom: 1px solid #ddd;
+        }
+        .message {
+            margin-bottom: 15px;
+            display: flex;
+            flex-direction: column;
+        }
+        .message .sender {
+            font-weight: bold;
+            font-size: 0.9em;
+            color: #555;
+            margin-bottom: 5px;
+        }
+        .message .bubble {
+            padding: 12px 18px;
+            border-radius: 20px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .my-message .bubble {
+            background-color: #4a90e2;
+            color: white;
+            border-top-right-radius: 5px;
+            align-self: flex-end;
+        }
+        .other-message .bubble {
+            background-color: #e9e9eb;
+            color: #333;
+            border-top-left-radius: 5px;
+            align-self: flex-start;
+        }
+        .input-area {
+            padding: 15px;
+            background-color: #f9f9f9;
+        }
+        .name-input {
+            width: calc(100% - 24px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+        .jewel-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .jewel-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .jewel-btn:hover {
+            opacity: 0.9;
+        }
+        #praise-btn { background-color: #f5a623; } /* 칭찬 (주황) */
+        #thanks-btn { background-color: #7ed321; } /* 감사 (초록) */
+        #question-btn { background-color: #50e3c2; } /* 질문 (민트) */
+        #request-btn { background-color: #bd10e0; } /* 부탁 (보라) */
+
+    </style>
+</head>
+<body>
+
+<div class="chat-container">
+    <div class="chat-header">💎 보석 대화 💎</div>
+    <div class="chat-box" id="chatBox">
+        </div>
+    <div class="input-area">
+        <input type="text" id="userName" class="name-input" placeholder="이름을 입력하세요...">
+        <div class="jewel-buttons">
+            <button class="jewel-btn" id="praise-btn" onclick="sendJewel('칭찬')">칭찬 보석 ✨</button>
+            <button class="jewel-btn" id="thanks-btn" onclick="sendJewel('감사')">감사 보석 🙏</button>
+            <button class="jewel-btn" id="question-btn" onclick="sendJewel('질문')">질문 보석 🤔</button>
+            <button class="jewel-btn" id="request-btn" onclick="sendJewel('부탁')">부탁 보석 🤝</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    function sendJewel(jewelType) {
+        const userName = document.getElementById('userName').value.trim();
+        if (!userName) {
+            alert('이름을 먼저 입력해주세요.');
+            return;
+        }
+
+        let messageText = '';
+        let promptMessage = '';
+        let emoji = '';
+
+        switch (jewelType) {
+            case '칭찬':
+                promptMessage = '칭찬의 말을 입력하세요:';
+                emoji = '✨';
+                break;
+            case '감사':
+                promptMessage = '감사의 말을 입력하세요:';
+                emoji = '🙏';
+                break;
+            case '질문':
+                promptMessage = '궁금한 점을 질문해보세요:';
+                emoji = '🤔';
+                break;
+            case '부탁':
+                promptMessage = '도움이 필요한 부분을 부탁해보세요:';
+                emoji = '🤝';
+                break;
+        }
+
+        messageText = prompt(promptMessage);
+
+        if (messageText && messageText.trim() !== '') {
+            addMessage(userName, `${jewelType} 보석 ${emoji}`, messageText);
+        }
+    }
+
+    function addMessage(sender, jewelInfo, text) {
+        const chatBox = document.getElementById('chatBox');
+        
+        const messageDiv = document.createElement('div');
+        messageDiv.classList.add('message', 'my-message'); // 간단한 구현을 위해 모두 'my-message'로 처리
+
+        messageDiv.innerHTML = `
+            <div class="sender">${sender}님의 ${jewelInfo}</div>
+            <div class="bubble">${text}</div>
+        `;
+
+        chatBox.appendChild(messageDiv);
+        chatBox.scrollTop = chatBox.scrollHeight; // 항상 최신 메시지가 보이도록 스크롤
+    }
+</script>
+
+</body>
+</html>
