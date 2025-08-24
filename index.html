@@ -1,0 +1,130 @@
+﻿import { useState } from "react";
+
+const VIRTUES = [
+  "감사", "결의", "겸손", "관용", "근면", "기꺼이함", "기지", "끈기",
+  "너그러움", "도움", "명예", "목적의식", "믿음직함", "배려", "봉사", "사랑",
+  "사려", "상냥함", "소신", "신뢰", "신용", "열정", "예의", "용기",
+  "우의", "유연성", "이상품기", "이해", "인내", "인정", "자율", "절도",
+  "정도", "정의로움", "정직", "존중", "중용", "진실함", "창의성", "책임감",
+  "청결", "초연", "충직", "친절", "탁월함", "평온함", "한결같음", "헌신",
+  "현명함", "협동", "화합", "확신"
+];
+
+const VIRTUE_MEANINGS = {
+  감사: "고마운 마음을 표현하는 거예요.",
+  사랑: "다른 사람을 따뜻하게 아끼는 마음이에요.",
+  용기: "무서울 때도 올바른 일을 선택하는 힘이에요.",
+  정직: "거짓말하지 않고 진실을 말하는 태도예요.",
+  배려: "다른 사람의 마음을 먼저 생각하는 거예요.",
+};
+
+const SAMPLE_MESSAGES = {
+  감사: ["오늘도 당신 덕분에 세상이 더 따뜻해졌어요.", "당신의 마음이 참 고마워요.", "감사를 표현하는 당신이 정말 멋져요."],
+  사랑: ["당신의 사랑은 누군가에게 큰 힘이 됩니다.", "마음 깊은 곳의 사랑이 느껴져요.", "사랑을 전하는 당신이 참 소중해요."],
+  용기: ["두려움을 안고도 나아가는 당신, 정말 용감해요.", "작은 용기가 큰 변화를 만들어요.", "당신의 용기에 박수를 보냅니다."],
+  정직: ["진실된 당신의 모습이 멋져요.", "정직은 사람들의 신뢰를 얻는 열쇠예요.", "당신의 솔직함이 빛나요."],
+  배려: ["다른 사람을 생각하는 당신, 참 따뜻해요.", "당신 덕분에 누군가는 웃을 수 있었어요.", "배려심 있는 당신이 자랑스러워요."],
+};
+
+export default function VirtueGemChat() {
+  const [name, setName] = useState("");
+  const [entered, setEntered] = useState(false);
+  const [selectedVirtue, setSelectedVirtue] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [finalMessage, setFinalMessage] = useState("");
+  const [meaning, setMeaning] = useState("");
+
+  const handleSend = () => {
+    if (!selectedVirtue) return;
+    const messages = SAMPLE_MESSAGES[selectedVirtue] || [
+      `${selectedVirtue}의 마음이 오늘의 당신을 빛나게 해요.`,
+      `당신은 ${selectedVirtue}의 보석을 지닌 멋진 사람이에요.`,
+      `${selectedVirtue}을(를) 전하는 당신이 자랑스러워요.`
+    ];
+    const explain = VIRTUE_MEANINGS[selectedVirtue] || `${selectedVirtue}는 좋은 성품을 가진 행동이에요.`;
+    setMeaning(explain);
+    setSuggestions(messages);
+    setFinalMessage("");
+  };
+
+  const handleFinalSelection = (msg) => {
+    setFinalMessage(msg);
+    setSuggestions([]);
+  };
+
+  if (!entered) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 flex flex-col items-center justify-center p-6">
+        <h1 className="text-2xl font-bold text-purple-700 mb-4">미덕의 보석 대화 💎</h1>
+        <input
+          type="text"
+          className="p-3 rounded-xl border border-purple-300 mb-4 w-full max-w-sm"
+          placeholder="당신의 이름을 입력하세요"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <button
+          className="bg-purple-500 text-white font-semibold rounded-xl px-6 py-3 hover:bg-purple-600"
+          onClick={() => setEntered(true)}
+          disabled={!name.trim()}
+        >
+          시작하기
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-purple-100 p-6 flex flex-col items-center">
+      <h1 className="text-3xl font-bold text-purple-700 mb-6">{name}님의 미덕의 보석 💎</h1>
+      <div className="w-full max-w-xl space-y-4">
+        <select
+          className="w-full p-3 rounded-xl border border-purple-300"
+          value={selectedVirtue}
+          onChange={(e) => setSelectedVirtue(e.target.value)}
+        >
+          <option value="">-- 미덕을 선택하세요 --</option>
+          {VIRTUES.map((virtue) => (
+            <option key={virtue} value={virtue}>
+              {virtue}
+            </option>
+          ))}
+        </select>
+        <button
+          className="w-full bg-purple-500 text-white font-semibold rounded-xl py-3 hover:bg-purple-600"
+          onClick={handleSend}
+        >
+          보석 보내기
+        </button>
+
+        {meaning && (
+          <div className="bg-white rounded-xl shadow-md p-4 text-center text-sm text-gray-700">
+            ✨ <strong>{selectedVirtue}</strong>란? {meaning}
+          </div>
+        )}
+
+        {suggestions.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-lg p-4 space-y-2">
+            <p className="font-semibold text-gray-700">💎 오늘의 나의 보석 문장을 선택해요:</p>
+            {suggestions.map((msg, idx) => (
+              <button
+                key={idx}
+                onClick={() => handleFinalSelection(msg)}
+                className="block w-full text-left px-4 py-2 bg-gradient-to-r from-purple-200 to-pink-200 rounded-xl hover:shadow-md"
+              >
+                {msg}
+              </button>
+            ))}
+          </div>
+        )}
+
+        {finalMessage && (
+          <div className="mt-10 p-8 bg-yellow-200 rounded-3xl text-center text-xl shadow-2xl border-4 border-yellow-300">
+            💖 <strong className="text-2xl text-purple-800">{name}</strong>님에게 보내는 보석 같은 말<br /><br />
+            <span className="font-bold text-purple-900 text-2xl">“{finalMessage}”</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
